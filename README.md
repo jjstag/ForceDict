@@ -1,16 +1,13 @@
 ### TODO
 
 - add the expansion buttons
-- add the expansion buttons
 - style
-  - style expansion buttons once i add them
-  - resolve comments
   - style expansion buttons once i add them
   - resolve comments
 - clean up (console.log statements, comments)
 - run through code make sure theres no mistakes
 - add shit to the metadata block like the github repo etc.
-- ah fuck nooooooo my fucking removing the ai also removes google's autocorrect button fuuuuuhuhuck. i have to remove `data-hveid="CA0QBQ"` instead of `id="rcnt"`
+- ah fuck nooooooo my fucking removing the ai also removes google's autocorrect button fuuuuuhuhuck. i have to remove a dynamic`data-hveid="???"` instead of `jsname="Ya7sxe"`
 
 ### TODO Eventually
 
