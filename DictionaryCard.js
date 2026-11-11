@@ -36,7 +36,7 @@ function createCardLayout(dictionaryCard) {
 }
 
 function fillCard(wordInfo, dictionaryCard) {
-  //maybe since this isnt async can put it outside of the parent function and then call it in dictionarycard() after i load the card layout
+  // maybe i can display 3 and then hide the rest but have an arrow to show 3 more
   const word = wordInfo.word;
   const wordP = dictionaryCard.querySelector("#wordP");
   const pronounciationAudio = dictionaryCard.querySelector(
@@ -57,18 +57,22 @@ function fillCard(wordInfo, dictionaryCard) {
     dictionaryCard.appendChild(definitionContainer);
 
     const definitionP = document.createElement("p");
+    definitionP.classList.add("definition");
     definitionP.textContent = definition;
     definitionContainer.appendChild(definitionP);
 
     const sentenceP = document.createElement("p");
+    sentenceP.classList.add("example")
     sentenceP.textContent = sentence;
     definitionContainer.appendChild(sentenceP);
-
+    
     const synonymsDiv = document.createElement("div");
+    synonymsDiv.classList.add("synonymsDiv")
     definitionContainer.appendChild(synonymsDiv);
 
     for (let i = 0; i < 5; i++) {
       const synonymA = document.createElement("a");
+      synonymA.classList.add("synonym")
       synonymA.textContent = synonyms[i];
       synonymA.href = `https://www.google.com/search?q=define+${synonymA.textContent}`;
       synonymsDiv.appendChild(synonymA);
@@ -82,6 +86,13 @@ function createDictionaryCard(wordInfo) {
   createCardLayout(dictionaryCard);
   fillCard(wordInfo, dictionaryCard);
   return dictionaryCard;
+}
+
+function styleDictionaryCard() {
+  const css = ``;
+  const style = document.createElement("style");
+  style.textContent = css;
+  document.head.appendChild(style);
 }
 
 export default createDictionaryCard;

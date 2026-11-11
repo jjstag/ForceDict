@@ -16,60 +16,48 @@ if (!(params.get("udm") == null || params.get("udm") == "4")) return;
 const query = params.get("q") ?? params.get("query") ?? "";
 const queryArr = query.split(" ");
 const keywords = ["def", "define", "synonyms", "definition", "of", "for"];
+// this can look up when something is "adfasf of asdafasdf" so fix that
 const shouldExecute = queryArr.some((word) => keywords.includes(word));
 if (shouldExecute && queryArr.length <= 3) {
   const centerCol = document.querySelector("#center_col");
   const word = queryArr.filter((word) => !keywords.includes(word)).join(" ");
   console.log(`word: ${word}`);
+  killAI();
   getWordInfo(word).then((wordInfo) => {
-    killAI();
     if (!wordInfo) {
       const wordNotFound = document.createElement("h2");
       wordNotFound = `A definition could not be found for "${word}"`;
       document.querySelector("#rcnt").prepend(wordNotFound);
-      killAI();
       return;
     }
-    // if the parentElement is loaded fill card otherwise set a mutationobserver
-    if (centerCol) {
-      console.log("centerCol already loaded!");
-      const dictionaryCard = createDictionaryCard(wordInfo);
-      centerCol.prepend(dictionaryCard);
-    } else {
-      console.log("centerCol not loaded, creating mutationObserver...");
-      const observer = new MutationObserver((mutationList) => {
-        const centerCol = document.querySelector("#center_col");
-        if (centerCol) {
-          observer.disconnect();
-          console.log("centerCol loaded");
-          const dictionaryCard = createDictionaryCard(wordInfo);
-          centerCol.prepend(dictionaryCard);
-        }
-      });
-      observer.observe(document.body, { childList: true });
-    }
+    appendToCenterCol();
   });
 }
 
+function appendToCenterCol() {
+  const observer = new MutationObserver((mutationList) => {
+    const centerCol = document.querySelector("#center_col");
+    if (centerCol) {
+      observer.disconnect();
+      console.log("centerCol loaded");
+      const dictionaryCard = createDictionaryCard(wordInfo);
+      centerCol.prepend(dictionaryCard);
+    }
+  });
+  observer.observe(document.body, { childList: true });
+}
+
 function killAI() {
-  const aiOverviewDiv = document.querySelector("[jsname=Ya7sxe]");
-  if (aiOverviewDiv) {
-    console.log("AI Overview already loaded!");
-    document.querySelector("[jsname=Ya7sxe]").remove();
-    console.log("AI Overview eliminated.");
-  } else {
-    console.log("AI Overview not loaded, creating mutationObserver...");
-    const observer = new MutationObserver((mutationList) => {
-      const aiOverviewDiv = document.querySelector("[jsname=Ya7sxe]");
-      if (aiOverviewDiv) {
-        observer.disconnect();
-        console.log("aiOverviewDiv loaded");
-        document.querySelector("[jsname=Ya7sxe]").remove();
-        console.log("AI Overview eliminated.");
-      }
-    });
-    observer.observe(document.body, { childList: true });
-  }
+  const observer = new MutationObserver((mutationList) => {
+    const aiOverviewDiv = document.querySelector("[jsname=Ya7sxe]");
+    if (aiOverviewDiv) {
+      observer.disconnect();
+      console.log("aiOverviewDiv loaded");
+      document.querySelector("[jsname=Ya7sxe]").remove();
+      console.log("AI Overview eliminated.");
+    }
+  });
+  observer.observe(document.body, { childList: true });
 }
 
 function createCardLayout(dictionaryCard) {
@@ -110,7 +98,7 @@ function createCardLayout(dictionaryCard) {
 }
 
 function fillCard(wordInfo, dictionaryCard) {
-  //maybe since this isnt async can put it outside of the parent function and then call it in dictionarycard() after i load the card layout
+  // maybe i can display 3 and then hide the rest but have an arrow to show 3 more
   const word = wordInfo.word;
   const wordP = dictionaryCard.querySelector("#wordP");
   const pronounciationAudio = dictionaryCard.querySelector(
@@ -131,18 +119,22 @@ function fillCard(wordInfo, dictionaryCard) {
     dictionaryCard.appendChild(definitionContainer);
 
     const definitionP = document.createElement("p");
+    definitionP.classList.add("definition");
     definitionP.textContent = definition;
     definitionContainer.appendChild(definitionP);
 
     const sentenceP = document.createElement("p");
+    sentenceP.classList.add("example");
     sentenceP.textContent = sentence;
     definitionContainer.appendChild(sentenceP);
 
     const synonymsDiv = document.createElement("div");
+    synonymsDiv.classList.add("synonymsDiv");
     definitionContainer.appendChild(synonymsDiv);
 
     for (let i = 0; i < 5; i++) {
       const synonymA = document.createElement("a");
+      synonymA.classList.add("synonym");
       synonymA.textContent = synonyms[i];
       synonymA.href = `https://www.google.com/search?q=define+${synonymA.textContent}`;
       synonymsDiv.appendChild(synonymA);
@@ -156,6 +148,13 @@ function createDictionaryCard(wordInfo) {
   createCardLayout(dictionaryCard);
   fillCard(wordInfo, dictionaryCard);
   return dictionaryCard;
+}
+
+function styleDictionaryCard() {
+  const css = ``;
+  const style = document.createElement("style");
+  style.textContent = css;
+  document.head.appendChild(style);
 }
 
 async function createParserRootEl(word) {
@@ -188,9 +187,7 @@ async function getWordInfo(word) {
   const parserRootEl = await createParserRootEl(word);
   if (parserRootEl === null) return null;
 
-  let currentElement = parserRootEl.querySelector(
-    "#thesaurusContentLinks",
-  ).nextElementSibling;
+  let currentElement = parserRootEl.querySelector(".wordtype");
   if (!currentElement) {
     return null;
   }

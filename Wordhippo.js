@@ -28,9 +28,7 @@ async function getWordInfo(word) {
   const parserRootEl = await createParserRootEl(word);
   if (parserRootEl === null) return null;
 
-  let currentElement = parserRootEl.querySelector(
-    "#thesaurusContentLinks",
-  ).nextElementSibling;
+  let currentElement = parserRootEl.querySelector(".wordtype");
   if (!currentElement) {
     return null;
   }
