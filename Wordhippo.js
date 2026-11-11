@@ -1,20 +1,19 @@
 async function createParserRootEl(word) {
   const parserRootEl = document.createElement("html");
-  const response = await new Promise((resolve) => {
+  const response = await new Promise((resolve, reject) => {
     GM_xmlhttpRequest({
       url: `https://www.wordhippo.com/what-is/another-word-for/${encodeURIComponent(word)}.html`,
       onload: (response) => {
         resolve(response);
       },
-      onerror: () => {
-        console.log("error while fetching word");
+      onerror: (error) => {
+        reject(new Error("Error while fetching word", { cause: error }));
       },
     });
   });
   const html = response?.responseText;
   if (!html) {
-    console.log("returned html is empty");
-    return null;
+    throw new Error("Returned html is empty");
   }
   parserRootEl.innerHTML = html;
   return parserRootEl;
@@ -26,11 +25,10 @@ async function getWordInfo(word) {
     definitions: [],
   };
   const parserRootEl = await createParserRootEl(word);
-  if (parserRootEl === null) return null;
 
   let currentElement = parserRootEl.querySelector(".wordtype");
   if (!currentElement) {
-    return null;
+    throw new Error("Could not find currentElement (likely not a valid word)");
   }
   while (true) {
     if (currentElement.classList.contains("wordtype")) {

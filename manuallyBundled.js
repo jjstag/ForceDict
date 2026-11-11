@@ -15,30 +15,48 @@ if (!(params.get("udm") == null || params.get("udm") == "4")) return;
 // only execute in the "all" tab
 const query = params.get("q") ?? params.get("query") ?? "";
 const queryArr = query.split(" ");
-const keywords = ["def", "define", "synonyms", "definition", "of", "for"];
-// this can look up when something is "adfasf of asdafasdf" so fix that
+const keywords = ["def", "define", "synonyms", "definition"];
 const shouldExecute = queryArr.some((word) => keywords.includes(word));
 if (shouldExecute && queryArr.length <= 3) {
   const word = queryArr.filter((word) => !keywords.includes(word)).join(" ");
   if (!word.trim()) return;
   console.log(`word: ${word}`);
   killAI();
-  getWordInfo(word).then((wordInfo) => {
-    if (!wordInfo) {
-      // im pretty sure this thingy just doesnt work at all
-      const wordNotFound = document.createElement("h2");
-      wordNotFound = `A definition could not be found for "${word}"`;
-      document.querySelector("#rcnt").prepend(wordNotFound);
-      return;
+  getWordInfo(word)
+    .then((wordInfo) => {
+      console.log(wordInfo);
+      appendToCenterCol(wordInfo);
+    })
+    .catch(() => {
+      appendWordNotFound(word);
+    });
+}
+
+function appendWordNotFound(word) {
+  const wordNotFoundEl = document.createElement("h3");
+  wordNotFoundEl.id = "wordNotFound";
+  wordNotFoundEl.textContent = `A definition could not be found for "${word}"`;
+  wordNotFoundEl.style =
+    "border: 1px solid var(--JKqx2); border-radius: 20px; padding: 20px; margin-bottom: 44px;";
+
+  const centerCol = document.querySelector("#center_col");
+  if (centerCol) {
+    centerCol.prepend(wordNotFoundEl);
+    return;
+  }
+  const observer = new MutationObserver(() => {
+    const centerCol = document.querySelector("#center_col");
+    if (centerCol) {
+      observer.disconnect();
+      centerCol.prepend(wordNotFoundEl);
     }
-    appendToCenterCol(wordInfo);
   });
+  observer.observe(document.body, { childList: true });
 }
 
 function appendToCenterCol(wordInfo) {
   const centerCol = document.querySelector("#center_col");
   if (centerCol) {
-    console.log("centerCol loaded");
     const dictionaryCard = createDictionaryCard(wordInfo);
     centerCol.prepend(dictionaryCard);
     return;
@@ -47,7 +65,6 @@ function appendToCenterCol(wordInfo) {
     const centerCol = document.querySelector("#center_col");
     if (centerCol) {
       observer.disconnect();
-      console.log("centerCol loaded");
       const dictionaryCard = createDictionaryCard(wordInfo);
       centerCol.prepend(dictionaryCard);
     }
@@ -124,7 +141,6 @@ function createCardLayout(dictionaryCard) {
   const wordP = document.createElement("p");
   wordP.id = "wordP";
   wordLabelDiv.appendChild(wordP);
-  // in case i forget again i think that the wordP is for the big word display on the top
 }
 
 function fillCard(wordInfo, dictionaryCard) {
@@ -284,21 +300,20 @@ p#wordP {
 
 async function createParserRootEl(word) {
   const parserRootEl = document.createElement("html");
-  const response = await new Promise((resolve) => {
+  const response = await new Promise((resolve, reject) => {
     GM_xmlhttpRequest({
       url: `https://www.wordhippo.com/what-is/another-word-for/${encodeURIComponent(word)}.html`,
       onload: (response) => {
         resolve(response);
       },
-      onerror: () => {
-        console.log("error while fetching word");
+      onerror: (error) => {
+        reject(new Error("Error while fetching word", { cause: error }));
       },
     });
   });
   const html = response?.responseText;
   if (!html) {
-    console.log("returned html is empty");
-    return null;
+    throw new Error("Returned html is empty");
   }
   parserRootEl.innerHTML = html;
   return parserRootEl;
@@ -310,11 +325,10 @@ async function getWordInfo(word) {
     definitions: [],
   };
   const parserRootEl = await createParserRootEl(word);
-  if (parserRootEl === null) return null;
 
   let currentElement = parserRootEl.querySelector(".wordtype");
   if (!currentElement) {
-    return null;
+    throw new Error("Could not find currentElement (likely not a valid word)");
   }
   while (true) {
     if (currentElement.classList.contains("wordtype")) {

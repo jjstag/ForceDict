@@ -48,7 +48,6 @@ function createCardLayout(dictionaryCard) {
   const wordP = document.createElement("p");
   wordP.id = "wordP";
   wordLabelDiv.appendChild(wordP);
-  // in case i forget again i think that the wordP is for the big word display on the top
 }
 
 function fillCard(wordInfo, dictionaryCard) {
