@@ -1,13 +1,19 @@
 // ==UserScript==
 // @name        ForceDict
-// @namespace   ForceDict
+// @namespace   https://github.com/jjstag/ForceDict/
 // @match       *://*google.com/search*
-// @icon        https://i.imgur.com/a/IznCc6T
+// @version     1.0
+// @description A userscript to bring back the old google dictionary using wordhippo's API.
+// @icon        https://raw.githubusercontent.com/jjstag/ForceDict/main/images/icon.jpeg
 // @run-at      document-start
 // @noframes
 // @grant       GM_xmlhttpRequest
-// @author      -
-// @description A userscript to bring back the old google dictionary using wordhippo's API.
+// @supportURL  https://github.com/jjstag/ForceDict/issues/
+// @homepageURL https://github.com/jjstag/ForceDict/
+// @tag         google
+// @tag         dictionary
+// @license     GPLv3
+// @author      jjstag
 // ==/UserScript==
 
 import getWordInfo from "./Wordhippo.js";
