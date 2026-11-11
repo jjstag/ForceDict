@@ -22,23 +22,30 @@ const keywords = ["def", "define", "synonyms", "definition", "of", "for"];
 // this can look up when something is "adfasf of asdafasdf" so fix that
 const shouldExecute = queryArr.some((word) => keywords.includes(word));
 if (shouldExecute && queryArr.length <= 3) {
-  const centerCol = document.querySelector("#center_col");
   const word = queryArr.filter((word) => !keywords.includes(word)).join(" ");
   console.log(`word: ${word}`);
   killAI();
   getWordInfo(word).then((wordInfo) => {
     if (!wordInfo) {
+      // im pretty sure this thingy just doesnt work at all
       const wordNotFound = document.createElement("h2");
       wordNotFound = `A definition could not be found for "${word}"`;
       document.querySelector("#rcnt").prepend(wordNotFound);
       return;
     }
-    appendToCenterCol();
+    appendToCenterCol(wordInfo);
   });
 }
 
-function appendToCenterCol() {
-  const observer = new MutationObserver((mutationList) => {
+function appendToCenterCol(wordInfo) {
+  const centerCol = document.querySelector("#center_col");
+  if (centerCol) {
+    console.log("centerCol loaded");
+    const dictionaryCard = createDictionaryCard(wordInfo);
+    centerCol.prepend(dictionaryCard);
+    return;
+  }
+  const observer = new MutationObserver(() => {
     const centerCol = document.querySelector("#center_col");
     if (centerCol) {
       observer.disconnect();
@@ -51,12 +58,18 @@ function appendToCenterCol() {
 }
 
 function killAI() {
-  const observer = new MutationObserver((mutationList) => {
+  const aiOverviewDiv = document.querySelector("[jsname=Ya7sxe]");
+  if (aiOverviewDiv) {
+    aiOverviewDiv.remove();
+    console.log("AI Overview eliminated.");
+    return;
+  }
+  const observer = new MutationObserver(() => {
     const aiOverviewDiv = document.querySelector("[jsname=Ya7sxe]");
     if (aiOverviewDiv) {
       observer.disconnect();
       console.log("aiOverviewDiv loaded");
-      document.querySelector("[jsname=Ya7sxe]").remove();
+      aiOverviewDiv.remove();
       console.log("AI Overview eliminated.");
     }
   });

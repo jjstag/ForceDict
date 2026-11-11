@@ -47,7 +47,6 @@ function fillCard(wordInfo, dictionaryCard) {
   pronounciationAudio.src = `https://translate.google.com/translate_tts?tl=en-US&client=t&q=${word}`;
   for (let wordDefinition of wordInfo.definitions) {
     const type = wordDefinition.type;
-    // I DON'T USE THIS YET!!!!!!!!!
     const definition = wordDefinition.definition;
     const sentence = wordDefinition.sentence;
     const synonyms = wordDefinition.synonyms;
@@ -56,23 +55,28 @@ function fillCard(wordInfo, dictionaryCard) {
     definitionContainer.classList.add("definitionContainer");
     dictionaryCard.appendChild(definitionContainer);
 
+    const typeP = document.createElement("p");
+    typeP.classList.add("typeP");
+    typeP.textContent = type;
+    definitionContainer.appendChild(typeP);
+
     const definitionP = document.createElement("p");
     definitionP.classList.add("definition");
     definitionP.textContent = definition;
     definitionContainer.appendChild(definitionP);
 
     const sentenceP = document.createElement("p");
-    sentenceP.classList.add("example")
+    sentenceP.classList.add("example");
     sentenceP.textContent = sentence;
     definitionContainer.appendChild(sentenceP);
-    
+
     const synonymsDiv = document.createElement("div");
-    synonymsDiv.classList.add("synonymsDiv")
+    synonymsDiv.classList.add("synonymsDiv");
     definitionContainer.appendChild(synonymsDiv);
 
     for (let i = 0; i < 5; i++) {
       const synonymA = document.createElement("a");
-      synonymA.classList.add("synonym")
+      synonymA.classList.add("synonym");
       synonymA.textContent = synonyms[i];
       synonymA.href = `https://www.google.com/search?q=define+${synonymA.textContent}`;
       synonymsDiv.appendChild(synonymA);
