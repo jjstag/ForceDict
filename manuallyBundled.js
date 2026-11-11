@@ -43,7 +43,7 @@ function appendWordNotFound(word) {
   wordNotFoundEl.id = "wordNotFound";
   wordNotFoundEl.textContent = `A definition could not be found for "${word}"`;
   wordNotFoundEl.style =
-    "border: 1px solid var(--JKqx2); border-radius: 20px; padding: 20px; margin-bottom: 44px;";
+    "border: 1px solid var(--JKqx2); border-radius: 20px; padding: 20px; margin: 12px 0 44px;";
 
   const centerCol = document.querySelector("#center_col");
   if (centerCol) {
@@ -79,14 +79,18 @@ function appendToCenterCol(wordInfo) {
 }
 
 function killAI() {
-  const aiOverviewDiv = document.querySelector("[jsname=Ya7sxe]");
+  const aiOverviewDiv = document.querySelector(
+    "[jsname=Ya7sxe] > [data-hveid]",
+  );
   if (aiOverviewDiv) {
     aiOverviewDiv.remove();
     console.log("AI Overview eliminated.");
     return;
   }
   const observer = new MutationObserver(() => {
-    const aiOverviewDiv = document.querySelector("[jsname=Ya7sxe]");
+    const aiOverviewDiv = document.querySelector(
+      "[jsname=Ya7sxe] > [data-hveid]",
+    );
     if (aiOverviewDiv) {
       observer.disconnect();
       console.log("aiOverviewDiv loaded");
