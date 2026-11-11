@@ -16,24 +16,30 @@ import createDictionaryCard from "./DictionaryCard.js";
 const params = new URLSearchParams(window.location.search);
 if (!(params.get("udm") == null || params.get("udm") == "4")) return;
 // only execute in the "all" tab
+
 const query = params.get("q") ?? params.get("query") ?? "";
 const queryArr = query.split(" ");
-const keywords = ["def", "define", "synonyms", "definition"];
-const shouldExecute = queryArr.some((word) => keywords.includes(word));
-if (shouldExecute && queryArr.length <= 3) {
-  const word = queryArr.filter((word) => !keywords.includes(word)).join(" ");
-  if (!word.trim()) return;
-  console.log(`word: ${word}`);
-  killAI();
-  getWordInfo(word)
-    .then((wordInfo) => {
-      console.log(wordInfo);
-      appendToCenterCol(wordInfo);
-    })
-    .catch(() => {
-      appendWordNotFound(word);
-    });
+const keywords = ["def", "define", "synonyms", "definition", "meaning"];
+
+// if the override parameter is found, the script will execute and ignore checks. this is to fix clicking synonyms which contain >2 words.
+const override = params.get("override");
+if (override === null) {
+  let shouldExecute = queryArr.some((word) => keywords.includes(word));
+  if (!shouldExecute || queryArr.length > 3) return;
 }
+
+const word = queryArr.filter((word) => !keywords.includes(word)).join(" ");
+if (!word.trim()) return;
+console.log(`word: ${word}`);
+killAI();
+getWordInfo(word)
+  .then((wordInfo) => {
+    console.log(wordInfo);
+    appendToCenterCol(wordInfo);
+  })
+  .catch(() => {
+    appendWordNotFound(word);
+  });
 
 function appendWordNotFound(word) {
   const wordNotFoundEl = document.createElement("h3");

@@ -107,7 +107,7 @@ function fillCard(wordInfo, dictionaryCard) {
       const synonymA = document.createElement("a");
       synonymA.classList.add("synonym");
       synonymA.textContent = synonyms[i];
-      synonymA.href = `https://www.google.com/search?q=define+${synonymA.textContent}`;
+      synonymA.href = `https://www.google.com/search?override&q=define+${encodeURIComponent(synonymA.textContent)}`;
       synonymsDiv.appendChild(synonymA);
     }
   });
