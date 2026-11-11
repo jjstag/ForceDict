@@ -88,18 +88,18 @@ function appendToCenterCol(wordInfo) {
 }
 
 function killAI() {
-  const aiOverviewDiv = document.querySelector(
-    "[jsname=Ya7sxe] > [data-hveid]",
-  );
+  const aiOverviewDiv =
+    document.querySelector("[jsname=Ya7sxe] > [data-hveid]") ??
+    document.querySelector("[jsname='ZLxsqf']");
   if (aiOverviewDiv) {
     aiOverviewDiv.remove();
     console.log("AI Overview eliminated.");
     return;
   }
   const observer = new MutationObserver(() => {
-    const aiOverviewDiv = document.querySelector(
-      "[jsname=Ya7sxe] > [data-hveid]",
-    );
+    const aiOverviewDiv =
+      document.querySelector("[jsname=Ya7sxe] > [data-hveid]") ??
+      document.querySelector("[jsname='ZLxsqf']");
     if (aiOverviewDiv) {
       observer.disconnect();
       console.log("aiOverviewDiv loaded");

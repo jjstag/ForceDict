@@ -4,7 +4,7 @@
 // @match       *://*google.com/search*
 // @version     1.0
 // @description A userscript to bring back the old google dictionary using wordhippo's API.
-// @icon        https://raw.githubusercontent.com/jjstag/ForceDict/main/images/icon.png
+// @icon        https://raw.githubusercontent.com/jjstag/ForceDict/main/images/icon.jpeg
 // @run-at      document-start
 // @noframes
 // @grant       GM_xmlhttpRequest
@@ -85,18 +85,18 @@ function appendToCenterCol(wordInfo) {
 }
 
 function killAI() {
-  const aiOverviewDiv = document.querySelector(
-    "[jsname=Ya7sxe] > [data-hveid]",
-  );
+  const aiOverviewDiv =
+    document.querySelector("[jsname=Ya7sxe] > [data-hveid]") ??
+    document.querySelector("[jsname='ZLxsqf']");
   if (aiOverviewDiv) {
     aiOverviewDiv.remove();
     console.log("AI Overview eliminated.");
     return;
   }
   const observer = new MutationObserver(() => {
-    const aiOverviewDiv = document.querySelector(
-      "[jsname=Ya7sxe] > [data-hveid]",
-    );
+    const aiOverviewDiv =
+      document.querySelector("[jsname=Ya7sxe] > [data-hveid]") ??
+      document.querySelector("[jsname='ZLxsqf']");
     if (aiOverviewDiv) {
       observer.disconnect();
       console.log("aiOverviewDiv loaded");
