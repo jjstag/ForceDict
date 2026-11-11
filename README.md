@@ -4,5 +4,6 @@
 - add IPA text (probably not gonna happen)
 - add word forms (not gonna try it for now)
 - style
+  - resolve the comments too
 - clean up (console.log statements, comments)
 - run through code make sure theres no mistakes

@@ -23,6 +23,7 @@ const keywords = ["def", "define", "synonyms", "definition", "of", "for"];
 const shouldExecute = queryArr.some((word) => keywords.includes(word));
 if (shouldExecute && queryArr.length <= 3) {
   const word = queryArr.filter((word) => !keywords.includes(word)).join(" ");
+  if (!word.trim()) return;
   console.log(`word: ${word}`);
   killAI();
   getWordInfo(word).then((wordInfo) => {
