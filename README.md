@@ -31,14 +31,14 @@ Old Google dictionary card example
 - add autocorrect (i can do this by reading the searchbar's textcontent - hacky, user might have to click sometimes - or by like querying wordhippo or something. even if theres a free autocorrect api idk if i want to decentralize my program that much. in summary not gonna try it for now.)
 - maybe i can somehow force `&udm=web` when I detect the query parameters, but I doubt it will happen. I could make the user change their default search engine, but that is cumbersome and would eliminate the AI completely, which they may not want.
 - add tags (this isn't useful enough for me to add it right now.)
-  -vulgar
-  -offensive
-  -informal
-  -slang
-  -dated
-  -often offensive
-  -rare
+  - vulgar
+  - offensive
+  - informal
+  - slang
+  - dated
+  - often offensive
+  - rare
 - add IPA text (probably not gonna happen. it will either make the program slower or force it to rely on more stuff)
 - add word forms (not gonna try it for now. how useful is it really??)
 
-P.S. I screwed up the the commits so they're all on the same day.
+P.S. I screwed up the the commits so most of them are all on the same day.

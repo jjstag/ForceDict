@@ -68,7 +68,6 @@ function fillCard(wordInfo, dictionaryCard) {
     const synonyms = wordDefinition.synonyms;
 
     const definitionContainer = document.createElement("div");
-    // just stick in a "if index >= 5 style display none" and then have a button which expands it
     definitionContainer.classList.add("definitionContainer");
     dictionaryCard.appendChild(definitionContainer);
     // may have to do some renaming
@@ -97,19 +96,43 @@ function fillCard(wordInfo, dictionaryCard) {
     sentenceP.textContent = sentence;
     li.appendChild(sentenceP);
 
+    const synonymsWrapper = document.createElement("div");
+    synonymsWrapper.classList.add("synonymsWrapper");
+    li.appendChild(synonymsWrapper);
+
     const synonymsDiv = document.createElement("div");
     synonymsDiv.classList.add("synonymsDiv");
-    li.appendChild(synonymsDiv);
+    synonymsWrapper.appendChild(synonymsDiv);
 
-    for (let i = 0; i < 5; i++) {
-      // maybe i could do them all and only display the first 5 and add an arrow
-      if (!synonyms[i]) break;
+    for (let i = 0; i < synonyms.length; i++) {
       const synonymA = document.createElement("a");
       synonymA.classList.add("synonym");
       synonymA.textContent = synonyms[i];
       synonymA.href = `https://www.google.com/search?override&q=define+${encodeURIComponent(synonymA.textContent)}`;
+      if (i >= 5) {
+        synonymA.style.display = "none";
+      }
       synonymsDiv.appendChild(synonymA);
     }
+
+    const moreButton = document.createElement("button");
+    moreButton.classList.add("moreButton");
+    moreButton.textContent = "V";
+    moreButton.onclick = () => {
+      let currentSynonym = synonymsDiv.querySelector(
+        ".synonym[style*='display: none;']",
+      );
+      for (i = 0; i < 10; i++) {
+        const time = i * 20;
+        setTimeout(() => {
+          if (!currentSynonym) return;
+          currentSynonym.style.display = "inline";
+          currentSynonym = currentSynonym.nextElementSibling;
+          synonymsDiv.scrollTop = synonymsDiv.scrollHeight;
+        }, time);
+      }
+    };
+    synonymsWrapper.appendChild(moreButton);
   });
 }
 
@@ -145,6 +168,9 @@ function styleDictionaryCard() {
 }
 
 .synonymsDiv {
+  display: flex;
+  flex-wrap: wrap;
+  row-gap: 5px;
   margin-top: 15px;
 }
 
@@ -167,9 +193,10 @@ function styleDictionaryCard() {
   padding-left: 40px;
 }
 
-.example {
+#dictionaryCard .example {
   color: darkgray;
-  font-size: 1em
+  font-size: 1em;
+  margin: 0;
 }
 
 .example:not(:empty)::before {
@@ -178,6 +205,10 @@ function styleDictionaryCard() {
 
 .example:not(:empty)::after {
   content: "\\"";
+}
+
+#dictionaryCard .definition:has(+ .example:empty) {
+  margin-bottom: 0;
 }
 
 #pronounciationDiv {
@@ -193,11 +224,32 @@ function styleDictionaryCard() {
   border: 0;
   border-radius: 20px;
   cursor: pointer;
+  color: darkgray;
 }
 
 p#wordP {
   font-size: 28px;
   margin-left: 10px;
+}
+
+.moreButton {
+  display: inline;
+  align-self: flex-start;
+  border: 0;
+  cursor: pointer;
+  background-color: transparent;
+  margin-top: 15px;
+  padding: 4px;
+}
+
+.synonymsWrapper {
+display: flex;
+}
+
+.synonymsDiv {
+  max-height: 130px;
+  overflow-y: scroll;
+  flex-grow: 1;
 }
 `;
   const style = document.createElement("style");
